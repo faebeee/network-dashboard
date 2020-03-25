@@ -1,0 +1,19 @@
+{
+    "name": "network-dashboard",
+    "version": "1.0.0",
+    "description": "",
+    "main": "index.js",
+    "scripts": {
+        "test": "echo \"Error: no test specified\" && exit 1"
+    },
+    "author": "",
+    "license": "ISC",
+    "dependencies": {
+        "blessed": "^0.1.81",
+        "blessed-contrib": "^4.8.19",
+        "link-speed": "^1.0.0",
+        "network-speed": "^2.0.5",
+        "round-to": "^4.1.0",
+        "speedtest-net": "^1.2.4"
+    }
+}
