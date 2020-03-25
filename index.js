@@ -1,3 +1,5 @@
+#!/usr/bin/env node
+
 const blessed = require('blessed');
 const contrib = require('blessed-contrib');
 const screen = blessed.screen();
@@ -14,12 +16,12 @@ let counter = 0;
 
 const grid = new contrib.grid({ rows: 12, cols: 12, screen: screen })
 
-const downloadLine = grid.set(1, 0, 5, 12, contrib.line, {
+const downloadLine = grid.set(2, 0, 5, 12, contrib.line, {
     label: 'Down Mbps'
     , tags: true
     , style: { line: 'blue' }
 })
-const uploadLine = grid.set(6, 0, 5, 12, contrib.line, {
+const uploadLine = grid.set(7, 0, 5, 12, contrib.line, {
     label: 'Up Mbps'
     , tags: true
     , style: { line: 'yellow' }
@@ -33,28 +35,42 @@ const LCD_CONFIG = {
     , display: 321 // what should be displayed before first call to setDisplay
     , elementSpacing: 4 // spacing between each element
     , elementPadding: 2 // how far away from the edges to put the elements
-    , color: 'white' // color for the segments
-    ,
 };
 
-const downloadMax = grid.set(0, 0, 1, 1, contrib.lcd, {
+const downloadMax = grid.set(0, 0, 2, 2, contrib.lcd, {
     ...LCD_CONFIG,
     label: 'Max Download',
+    color: 'blue'
 });
 
-const downloadMin = grid.set(0, 1, 1, 1, contrib.lcd, {
+const downloadMin = grid.set(0, 2, 2, 2, contrib.lcd, {
     ...LCD_CONFIG,
     label: 'Min Download',
+    color: 'blue'
 });
 
-const downloadAvg = grid.set(0, 2, 1, 1, contrib.lcd, {
+const downloadAvg = grid.set(0, 4, 2, 2, contrib.lcd, {
     ...LCD_CONFIG,
     label: 'Avg Download',
+    color: 'blue'
 });
 
-const downloadCur = grid.set(0, 3, 1, 1, contrib.lcd, {
+const uploadMax = grid.set(0, 10, 2, 2, contrib.lcd, {
     ...LCD_CONFIG,
-    label: 'Current Download',
+    label: 'Max Upload',
+    color: 'yellow'
+});
+
+const uploadMin = grid.set(0, 8, 2, 2, contrib.lcd, {
+    ...LCD_CONFIG,
+    label: 'Min Upload',
+    color: 'yellow'
+});
+
+const uploadAvg = grid.set(0, 6, 2, 2, contrib.lcd, {
+    ...LCD_CONFIG,
+    label: 'Avg Upload',
+    color: 'yellow'
 });
 
 
@@ -96,9 +112,15 @@ async function render() {
     downloadAvg.setDisplay(avg);
     downloadMax.setDisplay(Math.max(...downloadDataSets));
     downloadMin.setDisplay(Math.min(...downloadDataSets));
-    if (downloadDataSets.length > 0) {
-        downloadCur.setDisplay(downloadDataSets[downloadDataSets.length - 1]);
-    }
+
+
+    const upAvg = uploadDataSets.reduce((acc, v) => {
+        return acc + v;
+    }, 0) / uploadDataSets.length;
+
+    uploadAvg.setDisplay(upAvg);
+    uploadMax.setDisplay(Math.max(...uploadDataSets));
+    uploadMin.setDisplay(Math.min(...uploadDataSets));
 
     screen.render();
 
